@@ -34,3 +34,5 @@ The trained model and evaluation result will be saved in a directory 'result'
 ```
 python train_modifier.py
 ```
+
+Please see utils/common.py for other possible arguments.
