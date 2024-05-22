@@ -138,7 +138,7 @@ def load_refugee_distribution(
     return dist_df, loc_df
 
 def load_global_age_distribution(
-    data_path = './data/statistics/global_age.csv'
+    data_path = './data/statistics/age_by_country.csv'
 ):
     age_df = pd.read_csv(data_path)
     age_dict = defaultdict(dict)
@@ -161,7 +161,7 @@ def load_global_age_distribution(
     return age_dict
 
 def load_global_education_distribution(
-    data_path = './data/statistics/global_education.csv'
+    data_path = './data/statistics/education_by_country.csv'
 ):
     education_df = pd.read_csv(data_path)
     
@@ -555,8 +555,7 @@ def synthesize_location_probs(
     dim_a, dim_e, dim_g, dim_l = n_aeg_l.shape
     
     tau_w_lf_df = pd.read_csv(dp / 'working_proportion_of_foreigner_across_state.csv')
-    tau_w_lf = tau_w_lf_df['employment ratio'].values
-    tau_w_lf = np.load(dp / 'tau_w_lf.npy') # (L)
+    tau_w_lf = tau_w_lf_df['employment ratio'].values # (L)
     
     tau_a_lw_df = pd.read_csv(dp / 'worker_proportion_by_age_across_state.csv')
     tau_a_lw = tau_a_lw_df.set_index('age').values # (A, L)
