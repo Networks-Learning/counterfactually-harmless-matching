@@ -538,26 +538,49 @@ def synthesize_location_probs(
     reset_seed(seed)
     dp = Path(data_path)
     
-    n_aeg_l = np.load(dp / 'n_aeg_l.npy') # (A, E, G, L)
+    n_aeg_l_df = pd.read_csv(dp / 'population_by_age_education_gender_across_state.csv')
+    n_aeg_l_df = n_aeg_l_df.set_index('state_gender')
+    n_aeg_l = np.zeros((5, 3, 2, 10)) # (A, E, G, L)
+
+    for i_a, a in enumerate(['20-24', '25-34', '35-44', '45-64', '65-100']):
+        for i_e, e in enumerate(['primary or less', 'secondary', 'tertiary']):
+            for i_g, g in enumerate(['Male', 'Female']):
+                for i_l, l in enumerate(LOCATIONS):
+                    c = f'{a}_{e}'
+                    i = f'{l}_{g}'
+                    val = n_aeg_l_df.at[i, c]
+
+                    n_aeg_l[i_a,i_e,i_g,i_l] = val
+
     dim_a, dim_e, dim_g, dim_l = n_aeg_l.shape
+    
+    tau_w_lf_df = pd.read_csv(dp / 'working_proportion_of_foreigner_across_state.csv')
+    tau_w_lf = tau_w_lf_df['employment ratio'].values
     tau_w_lf = np.load(dp / 'tau_w_lf.npy') # (L)
     
-    tau_a_lw = np.load(dp / 'tau_a_lw.npy') # (A, L)
+    tau_a_lw_df = pd.read_csv(dp / 'worker_proportion_by_age_across_state.csv')
+    tau_a_lw = tau_a_lw_df.set_index('age').values # (A, L)
     n_a_l = n_aeg_l.sum(axis=(1, 2)) 
     tau_a_l = n_a_l / n_a_l.sum(axis=0) 
     mu_a_l = tau_a_lw * np.expand_dims(tau_w_lf, axis=0) / tau_a_l # (A, L)
     
-    tau_c_lwf = np.load(dp / 'tau_c_lwf.npy') # (C, L)
+    tau_c_lwf_df = pd.read_csv(dp / 'foreign_worker_proportion_by_country_across_state.csv')
+    tau_c_lwf = tau_c_lwf_df.set_index('country').values # (C, L)
     dim_c, _ = tau_c_lwf.shape
-    tau_c_lf = np.load(dp / 'tau_c_lf.npy', allow_pickle=True) # (C, L)
+    tau_c_lf_df = pd.read_csv(dp / 'foreigner_proportion_by_country_across_state.csv')
+    tau_c_lf = tau_c_lf_df.set_index('country').values # (C, L)
     mu_c_l = tau_c_lwf * np.expand_dims(tau_w_lf, axis=0) / tau_c_lf # (C, L)
     
-    tau_e_lwf = np.load(dp / 'tau_e_lwf.npy') # (E, L)
-    tau_e_lf = np.load(dp / 'tau_e_lf.npy') # (E, L)
+    tau_e_lwf_df = pd.read_csv(dp / 'foreign_worker_proportion_by_education_across_state.csv')
+    tau_e_lwf = tau_e_lwf_df.set_index('education').values # (E, L)
+    tau_e_lf_df = pd.read_csv(dp / 'foreigner_proportion_by_education_across_state.csv')
+    tau_e_lf = tau_e_lf_df.set_index('education').values # (E, L)
     mu_e_l = tau_e_lwf * np.expand_dims(tau_w_lf, axis=0) / tau_e_lf # (E, L)
     
-    tau_g_lw = np.load(dp / 'tau_g_lw.npy') # (G, L)
-    tau_g_lf = np.load(dp / 'tau_g_lf.npy') # (G, L)
+    tau_g_lw_df = pd.read_csv(dp / 'worker_proportion_by_gender_across_state.csv')
+    tau_g_lw = tau_g_lw_df.set_index('gender').values # (G, L)
+    tau_g_lf_df = pd.read_csv(dp / 'foreigner_proportion_by_gender_across_state.csv')
+    tau_g_lf = tau_g_lf_df.set_index('gender').values # (G, L)
     mu_g_l = tau_g_lw * np.expand_dims(tau_w_lf, axis=0) / tau_g_lf # (G, L)
     
     n_eg_l = n_aeg_l.sum(axis=0) # (E, G, L)
