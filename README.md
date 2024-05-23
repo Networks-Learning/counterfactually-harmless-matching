@@ -26,7 +26,7 @@ python extract_classifier_scores.py --beta [bias of the classifier]
 Then, start our proposed postprocessing framework by computing minimally modified weight that is guaranteed to be counterfactually harmless.
 The adjusted weight will be saved in a directory 'save_dir/problems'
 ```
-python create_problems.py --epsilon [epsilon used in the algorithm] --w [noise level of the default policy]
+python create_problem.py --epsilon [epsilon used in the algorithm] --w [noise level of the default policy]
 ```
 
 Train the deep learning model that learns to avoid counterfactual harm.
