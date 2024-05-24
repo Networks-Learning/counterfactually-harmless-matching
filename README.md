@@ -1,6 +1,6 @@
 # Matchings, Predictions and Counterfactual Harm in Refugee Resettlement Processes
 
-This repo is the PyTorch code of our paper, which is currently under review.
+This repository is the official implementation of [Matchings, Predictions and Counterfactual Harm in Refugee Resettlement Processes](#).
 
 ## Required packages ##
 - python == 3.9.13
